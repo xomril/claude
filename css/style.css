@@ -1,0 +1,319 @@
+
+/* â”€â”€ Reset & Base â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #09080a; color: #f0ead8; }
+
+/* â”€â”€ Progress Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.pb { position: fixed; z-index: 1000; transition: width .4s ease, height .4s ease; }
+#pb-top    { top: 0;    left: 0;  height: 3px; width:  0; background: linear-gradient(to right,  #d4ff00, #ff6b00); }
+#pb-right  { top: 0;    right: 0; width:  3px; height: 0; background: linear-gradient(to bottom, #ff6b00, #d4ff00); }
+#pb-bottom { bottom: 0; right: 0; height: 3px; width:  0; background: linear-gradient(to left,   #d4ff00, #ff6b00); }
+#pb-left   { bottom: 0; left: 0;  width:  3px; height: 0; background: linear-gradient(to top,    #ff6b00, #d4ff00); }
+
+/* â”€â”€ Slide Container â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+#deck { position: relative; width: 100%; height: 100%; }
+section.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 60px 80px;
+  opacity: 0; transform: translateX(60px); pointer-events: none;
+  transition: opacity .45s cubic-bezier(.4,0,.2,1), transform .45s cubic-bezier(.4,0,.2,1);
+  text-align: center;
+}
+/* Each slide gets its own bg variation */
+section.slide:nth-child(odd)  { background: radial-gradient(ellipse at 70% 30%, #1a1008 0%, #09080a 60%); }
+section.slide:nth-child(even) { background: radial-gradient(ellipse at 30% 70%, #120a12 0%, #09080a 60%); }
+section.slide.active  { opacity: 1; transform: translateX(0); pointer-events: auto; }
+section.slide.exit-left { opacity: 0; transform: translateX(-60px); }
+
+/* â”€â”€ Slide Counter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+#counter {
+  position: fixed; bottom: 24px; right: 32px; font-size: 13px;
+  color: rgba(240,234,216,.3); z-index: 900; font-variant-numeric: tabular-nums;
+  letter-spacing: 2px; font-weight: 600;
+}
+
+/* â”€â”€ Typography â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+h1 { font-size: 3.4rem; font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+h2 { font-size: 2.6rem; font-weight: 700; line-height: 1.2; margin-bottom: 14px; }
+h3 { font-size: 1.5rem; font-weight: 600; line-height: 1.3; margin-bottom: 10px; color: #b0a48a; }
+p, li { font-size: 1.25rem; line-height: 1.7; }
+.subtitle { font-size: 1.5rem; color: #9a8f78; margin-top: 8px; font-weight: 400; }
+.small { font-size: 1rem; color: #7a7060; }
+
+/* Lime-to-orange gradient text â€” the signature move */
+.gradient-text {
+  background: linear-gradient(110deg, #d4ff00 10%, #ff6b00 90%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+/* Alternate: orange-to-magenta */
+.gradient-text-alt {
+  background: linear-gradient(110deg, #ff4d00, #d94fff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.accent  { color: #d4ff00; }
+.accent2 { color: #ff6b00; }
+.muted   { color: #9a8f78; }
+strong   { color: #fff; }
+
+/* â”€â”€ Layout Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.columns  { display: flex; gap: 48px; width: 100%; max-width: 1100px; margin-top: 24px; }
+.col      { flex: 1; text-align: left; }
+.grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 900px; margin-top: 20px; }
+.grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; width: 100%; max-width: 1000px; margin-top: 20px; }
+.grid-2x3 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 100%; max-width: 950px; margin-top: 20px; }
+.full-width { width: 100%; max-width: 1000px; }
+.mt { margin-top: 24px; }
+.mb { margin-bottom: 16px; }
+
+/* â”€â”€ Cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(212,255,0,.12);
+  border-radius: 16px; padding: 28px 24px; text-align: left;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 40px rgba(212,255,0,.08);
+  border-color: rgba(212,255,0,.28);
+}
+.card .icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+.card h4 { font-size: 1.15rem; font-weight: 700; color: #f0ead8; margin-bottom: 6px; }
+.card p  { font-size: .95rem; color: #9a8f78; line-height: 1.55; }
+.card-sm { padding: 20px 18px; border-radius: 12px; }
+
+/* Orange-accent card variant */
+.card-orange {
+  border-color: rgba(255,107,0,.2);
+}
+.card-orange:hover {
+  box-shadow: 0 8px 40px rgba(255,107,0,.1);
+  border-color: rgba(255,107,0,.35);
+}
+
+/* â”€â”€ Quote Block â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.quote-block {
+  background: rgba(212,255,0,.05);
+  border-left: 4px solid #d4ff00;
+  padding: 36px 40px; border-radius: 0 16px 16px 0;
+  max-width: 900px; text-align: left; margin-top: 24px;
+  position: relative;
+}
+.quote-block::before {
+  content: '"';
+  position: absolute; top: -10px; left: 32px;
+  font-size: 6rem; font-weight: 900; color: rgba(212,255,0,.15); line-height: 1;
+  font-family: Georgia, serif;
+}
+.quote-block p { font-size: 1.55rem; font-style: italic; line-height: 1.7; color: #e8e2d0; }
+.quote-block .attribution { font-size: 1rem; color: #7a7060; margin-top: 16px; font-style: normal; font-weight: 600; }
+
+/* â”€â”€ Big CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.big-cta {
+  font-size: 2.2rem; font-weight: 800; margin-top: 40px;
+  background: linear-gradient(110deg, #d4ff00, #ff6b00);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* â”€â”€ Before/After comparison â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.compare-col { text-align: center; padding: 32px; border-radius: 16px; }
+.compare-before { background: rgba(255,77,0,.08); border: 1px solid rgba(255,77,0,.2); }
+.compare-after  { background: rgba(212,255,0,.07); border: 1px solid rgba(212,255,0,.2); }
+.compare-col .icons { font-size: 2.6rem; margin-bottom: 16px; }
+.compare-col h4 { font-size: 1.3rem; margin-bottom: 10px; }
+.compare-col p  { font-size: 1rem; color: #9a8f78; }
+
+/* â”€â”€ Step list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.steps { list-style: none; text-align: left; max-width: 750px; margin-top: 20px; }
+.steps li { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; font-size: 1.2rem; }
+.steps .num {
+  flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, #d4ff00, #ff6b00);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1rem; color: #09080a;
+}
+
+/* â”€â”€ Terminal / Claude Code mockup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.terminal {
+  background: #141414; border-radius: 10px; overflow: hidden;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: .8rem; line-height: 1.6; text-align: left;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 24px 64px rgba(0,0,0,.7);
+  display: flex; flex-direction: column;
+}
+.terminal-bar {
+  background: #1e1e1e; padding: 9px 14px;
+  display: flex; align-items: center; gap: 7px;
+  border-bottom: 1px solid #2a2a2a; flex-shrink: 0;
+}
+.terminal-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.terminal-dot.red    { background: #ff5f57; }
+.terminal-dot.yellow { background: #ffbd2e; }
+.terminal-dot.green  { background: #28c840; }
+.terminal-title {
+  flex: 1; text-align: center; font-size: .72rem;
+  color: rgba(255,255,255,.3); letter-spacing: .3px; font-family: inherit;
+}
+.terminal-body { padding: 12px 16px; flex: 1; overflow: hidden; }
+
+/* Shell history lines (before claude starts) */
+.t-sh-arrow { color: #26a69a; }            /* |> teal arrow */
+.t-sh-dir   { color: #e8912d; font-weight:600; } /* directory name orange */
+.t-sh-cmd   { color: #e0e0e0; }            /* shell command white */
+
+/* Claude Code welcome box */
+.t-welcome {
+  border: 1px solid #e8912d; border-radius: 4px;
+  display: flex; margin: 8px 0; overflow: hidden;
+}
+.t-welcome-left {
+  flex: 1; padding: 10px 14px; border-right: 1px solid #e8912d;
+  text-align: center;
+}
+.t-welcome-right { flex: 1.2; padding: 10px 14px; }
+.t-welcome-title { color: #e8912d; font-size: .72rem; margin-bottom: 4px; }
+.t-welcome-name  { color: #e0e0e0; font-weight: 700; font-size: .85rem; margin-bottom:6px; }
+.t-welcome-robot { font-size: 1.6rem; display:block; margin: 4px 0 6px; }
+.t-welcome-meta  { color: rgba(255,255,255,.3); font-size: .68rem; line-height:1.5; }
+.t-welcome-tip   { color: #e0e0e0; font-size: .75rem; line-height:1.5; }
+.t-welcome-sub   { color: rgba(255,255,255,.3); font-size: .7rem; margin-top:8px; }
+
+/* Claude Code version label */
+.t-version { color: #e8912d; font-size: .72rem; margin-bottom: 2px; }
+
+/* User input row â€” highlighted */
+.t-input-row {
+  background: #2a2a2a; margin: 6px -16px; padding: 5px 16px;
+  display: flex; align-items: center; gap: 6px;
+}
+.t-input-arrow { color: #e0e0e0; }
+.t-input-text  { color: #e0e0e0; }
+
+/* Claude response lines */
+.t-tool-green { color: #4caf50; }          /* â— green dot tool */
+.t-tool-white { color: #e0e0e0; }          /* â— white dot response */
+.t-thinking   { color: #e8912d; }          /* âœ³ Transmutingâ€¦ */
+.t-dim        { color: rgba(255,255,255,.28); }
+.t-sep        { border: none; border-top: 1px solid #2a2a2a; margin: 8px 0; }
+.t-line       { display: block; margin: 1px 0; }
+
+/* Status bar at bottom */
+.t-statusbar {
+  background: #1a1a1a; border-top: 1px solid #2a2a2a;
+  padding: 5px 14px; display: flex; gap: 16px; align-items: center;
+  flex-shrink: 0; font-size: .7rem;
+}
+.t-status-dir   { color: #e8912d; }
+.t-status-model { color: rgba(255,255,255,.4); }
+.t-status-ctx   { color: rgba(255,255,255,.4); }
+
+/* Input prompt line */
+.t-prompt-line { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+.t-prompt-gt   { color: rgba(255,255,255,.4); }
+.t-cursor {
+  display: inline-block; width: 8px; height: 13px;
+  background: #e0e0e0; vertical-align: middle;
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* â”€â”€ Wireframe mock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.mock {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(212,255,0,.15);
+  border-radius: 12px; padding: 24px; max-width: 520px; margin: 20px auto 0; text-align: left;
+}
+.mock-bar  { height: 10px; border-radius: 5px; margin-bottom: 10px; }
+.mock-row  { display: flex; gap: 12px; margin-bottom: 10px; }
+.mock-cell { flex: 1; height: 32px; border-radius: 6px; background: rgba(255,255,255,.07); }
+.mock-btn  {
+  display: inline-block; padding: 8px 20px; border-radius: 8px;
+  background: linear-gradient(110deg, #d4ff00, #ff6b00);
+  color: #09080a; font-weight: 800; font-size: .85rem; margin-top: 8px;
+}
+
+/* â”€â”€ Principles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.principle { text-align: left; }
+.num-badge {
+  display: inline-flex; width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, #d4ff00, #ff6b00);
+  align-items: center; justify-content: center;
+  font-weight: 900; font-size: .85rem; color: #09080a; margin-bottom: 8px;
+}
+
+/* â”€â”€ Tag pills â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.tag {
+  display: inline-block; padding: 6px 16px; border-radius: 20px;
+  background: rgba(212,255,0,.08); border: 1px solid rgba(212,255,0,.22);
+  font-size: .9rem; color: #d4ff00; margin: 4px;
+}
+.tag-orange {
+  background: rgba(255,107,0,.1); border: 1px solid rgba(255,107,0,.25);
+  color: #ff6b00;
+}
+
+/* â”€â”€ Decorative shapes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Instead of soft blobs â€” angular glows for a more editorial feel */
+.glow {
+  position: absolute; border-radius: 50%; filter: blur(120px); opacity: .12; pointer-events: none;
+}
+.glow-lime    { background: #d4ff00; }
+.glow-orange  { background: #ff4d00; }
+.glow-magenta { background: #d94fff; }
+.glow-teal    { background: #00e5c8; }
+
+/* Corner accent lines */
+.corner-tl, .corner-br {
+  position: absolute; width: 80px; height: 80px; pointer-events: none; opacity: .4;
+}
+.corner-tl { top: 32px; left: 32px; border-top: 2px solid #d4ff00; border-left: 2px solid #d4ff00; border-radius: 4px 0 0 0; }
+.corner-br { bottom: 32px; right: 32px; border-bottom: 2px solid #ff6b00; border-right: 2px solid #ff6b00; border-radius: 0 0 4px 0; }
+
+/* â”€â”€ QA slide â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.qa-title { font-size: 4rem; font-weight: 900; }
+
+/* â”€â”€ Category label chip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.cat-chip {
+  display: inline-block; padding: 4px 14px; border-radius: 6px;
+  font-size: .8rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.cat-lime    { background: rgba(212,255,0,.12); color: #d4ff00; border: 1px solid rgba(212,255,0,.25); }
+.cat-orange  { background: rgba(255,107,0,.1);  color: #ff8c42; border: 1px solid rgba(255,107,0,.25); }
+.cat-magenta { background: rgba(217,79,255,.1); color: #d94fff; border: 1px solid rgba(217,79,255,.25); }
+
+/* â”€â”€ Nav Arrows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+#nav-arrows {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 12px; z-index: 900;
+}
+#nav-arrows button {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(240,234,216,.15);
+  color: rgba(240,234,216,.6); font-size: 1.3rem; width: 44px; height: 44px;
+  border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .2s, border-color .2s, color .2s;
+}
+#nav-arrows button:hover {
+  background: rgba(212,255,0,.12); border-color: rgba(212,255,0,.4); color: #d4ff00;
+}
+
+/* â”€â”€ Print â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media print {
+  body { overflow: visible; background: #fff; color: #111; }
+  .pb, #counter, #notes-overlay { display: none !important; }
+  section.slide {
+    position: relative !important; opacity: 1 !important; transform: none !important;
+    pointer-events: auto !important; page-break-after: always;
+    background: #fff !important; color: #111; min-height: 100vh;
+  }
+  .glow, .corner-tl, .corner-br { display: none; }
+  .gradient-text { -webkit-text-fill-color: #333; }
+  .card { border-color: #ddd; background: #f9f9f9; }
+  .card p, .subtitle, p, li { color: #444; }
+  h1, h2, h3, h4, strong { color: #111; }
+  .quote-block { background: #f8f8f0; }
+  .quote-block p { color: #333; }
+}
