@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+  # Claude Code status line - model + context bar + cost
+
+  input=$(cat)
+
+  model=$(echo "$input" | jq -r '.model.display_name // ""')
+  remaining=$(echo "$input" | jq -r '.context_window.remaining_percentage // empty')
+  session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
+
+  DIM='\033[2m'
+  RED='\033[0;31m'
+  RESET='\033[0m'
+  ORANGE='\033[38;5;208m'
+
+  line=""
+
+  if [ -n "$model" ]; then
+    line="$(printf "${DIM}%s${RESET}" "$model")"
+  fi
+
+  if [ -n "$remaining" ]; then
+    remaining_int=${remaining%.*}
+    used_int=$((100 - remaining_int))
+
+    bar_length=10
+    filled=$(( used_int * bar_length / 100 ))
+    empty=$(( bar_length - filled ))
+    bar=""
+    for i in $(seq 1 $filled); do bar="${bar}█"; done
+    for i in $(seq 1 $empty);  do bar="${bar}░"; done
+
+    if [ "$used_int" -le 50 ]; then
+      BAR_COLOR='\033[0;32m'
+    elif [ "$used_int" -le 80 ]; then
+      BAR_COLOR='\033[0;33m'
+    else
+      BAR_COLOR='\033[0;31m'
+    fi
+
+    line="$line  $(printf "${BAR_COLOR}%s${RESET}" "$bar") ${used_int}%"
+  fi
+
+  if [ -n "$session_cost" ]; then
+    if (( $(echo "$session_cost > 10" | bc -l) )); then
+      line="$line  $(printf "${RED}\$%.4f${RESET}" "$session_cost")"
+    elif (( $(echo "$session_cost > 5" | bc -l) )); then
+      line="$line  $(printf "${ORANGE}\$%.4f${RESET}" "$session_cost")"
+    else
+      line="$line  $(printf "${DIM}\$%.4f${RESET}" "$session_cost")"
+    fi
+  fi
+
+  printf "%b\n" "$line"
+
+  Then on the receiving machine:
+
+  chmod +x ~/.claude/statusline-command.sh
+
+  And add to ~/.claude/settings.json:
+
+  {
+    "statusLine": {
+      "type": "command",
+      "command": "bash $HOME/.claude/statusline-command.sh"
+    }
+  }
